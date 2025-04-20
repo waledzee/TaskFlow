@@ -2,26 +2,66 @@ package com.waled.TaskFlow.Controller;
 
 import com.waled.TaskFlow.Model.Task;
 import com.waled.TaskFlow.Model.TaskStatus;
-import com.waled.TaskFlow.Repository.TaskRepository;
 import com.waled.TaskFlow.Service.TaskService;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import com.waled.TaskFlow.Service.TaskServiceimpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/tasks")
 public class TaskController {
+
     private final TaskService taskService;
-    public TaskController(TaskService taskService) {
+    private final TaskServiceimpl taskServiceimpl;
+
+    public TaskController(TaskService taskService, TaskServiceimpl taskServiceimpl) {
         this.taskService = taskService;
+        this.taskServiceimpl = taskServiceimpl;
     }
-    TaskRepository taskRepository;
-    @GetMapping("api/tasks/status/{status}")
-    public List<Task> getTaskByStatus(@PathVariable  TaskStatus status)
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
+        Task task = taskService.getTaskById(id)
+                .orElseThrow(() -> new
+                        IllegalArgumentException("Task not found with id: " + id));
+        return ResponseEntity.ok(task);
+    }
+    @GetMapping
+    public ResponseEntity<List<Task>> getAllTasks()
     {
-        return taskService.getTasksByStatus(status);
+        List<Task> tasks=taskService.getAllTasks();
+        return ResponseEntity.ok(tasks);
+    }
+
+    @PostMapping
+    public ResponseEntity<Task> createTask(@RequestBody Task task) {
+        Task createdTask = taskService.createTask(task);
+        return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
+    }
+    @PostMapping("/{id}")
+    public ResponseEntity<Task> updateTask(@RequestBody Task task,@PathVariable  Long id) {
+        Task updatedTask = taskService.updateTask(id,task);
+        return new ResponseEntity<>(updatedTask, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<Task> deleteTask(@PathVariable  Long id) {
+       taskService.deleteTask(id);
+        return new ResponseEntity<>( HttpStatus.CREATED);
+    }
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<Task>> getTasksByStatus(@PathVariable String status) {
+        List<Task> tasks = taskService.getTasksByStatus(TaskStatus.valueOf(status));
+        return ResponseEntity.ok(tasks);
+    }
+    @PostMapping("/{id}/{status}")
+    public ResponseEntity<Task> UpdatedTaskStatus(@PathVariable Long id,@PathVariable String status)
+    {
+        Task task =taskService.updateTaskStatus(id,TaskStatus.valueOf(status));
+        return ResponseEntity.ok(task);
     }
 
 }

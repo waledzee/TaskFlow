@@ -2,23 +2,20 @@ package com.waled.TaskFlow.Service;
 
 import com.waled.TaskFlow.Model.Task;
 import com.waled.TaskFlow.Model.TaskStatus;
-import com.waled.TaskFlow.Repository.TaskRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class TaskService {
-    @Autowired
-   private final TaskRepository taskRepository;
-    public TaskService(TaskRepository taskRepository)
-    {
-        this.taskRepository=taskRepository;
-    }
-    public List<Task> getTasksByStatus(TaskStatus status) {
-        return taskRepository.findByStatus(status);
-    }
-
-
+@Transactional
+public interface TaskService {
+    Task createTask(Task task);
+    Optional<Task> getTaskById(Long id);
+    List<Task> getAllTasks();
+    Task updateTask(Long id, Task taskDetails);
+    void deleteTask(Long id);
+   List<Task> getTasksByStatus(TaskStatus status);
+    Task updateTaskStatus(Long id, TaskStatus newStatus);
 }

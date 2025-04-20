@@ -1,31 +1,86 @@
 package com.waled.TaskFlow.Model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "tasks")
-@Data
-@NoArgsConstructor
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name="title" ,nullable = false)
+    @JsonProperty("title")
     private String title;
     @Column(name="description" ,nullable = false)
+    @JsonProperty("description")
     private String description;
 
     @Column(name = "due_date")
+    @JsonProperty("dueDate")
     private LocalDate dueDate;
 
+    public Task() {}
+
+    public Task(Long id, String title, String description, LocalDate dueDate, TaskStatus status) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.status = status;
+    }
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name="status", nullable = false)
+    @JsonProperty("status")
+
     private TaskStatus status = TaskStatus.TODO;
 
 
