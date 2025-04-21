@@ -1,6 +1,7 @@
 package com.waled.TaskFlow.Service;
 
 
+import com.waled.TaskFlow.Exception.TaskNotFoundException;
 import com.waled.TaskFlow.Model.Task;
 import com.waled.TaskFlow.Model.TaskStatus;
 import com.waled.TaskFlow.Repository.TaskRepository;
@@ -30,7 +31,8 @@ public class TaskServiceimpl implements TaskService{
     @Override
     public Optional<Task> getTaskById(Long id)
     {
-       return taskRepository.findById(id);
+       return taskRepository.findById(id)
+               .orElseThrow(() -> new RuntimeException("Task not found "+id ));
     }
     @Override
     public List<Task> getAllTasks()

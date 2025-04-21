@@ -15,11 +15,9 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
-    private final TaskServiceimpl taskServiceimpl;
 
-    public TaskController(TaskService taskService, TaskServiceimpl taskServiceimpl) {
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
-        this.taskServiceimpl = taskServiceimpl;
     }
 
     @GetMapping("/{id}")
@@ -29,10 +27,10 @@ public class TaskController {
                         IllegalArgumentException("Task not found with id: " + id));
         return ResponseEntity.ok(task);
     }
+
     @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks()
-    {
-        List<Task> tasks=taskService.getAllTasks();
+    public ResponseEntity<List<Task>> getAllTasks() {
+        List<Task> tasks = taskService.getAllTasks();
         return ResponseEntity.ok(tasks);
     }
 
@@ -41,26 +39,28 @@ public class TaskController {
         Task createdTask = taskService.createTask(task);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
-    @PostMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@RequestBody Task task,@PathVariable  Long id) {
-        Task updatedTask = taskService.updateTask(id,task);
-        return new ResponseEntity<>(updatedTask, HttpStatus.CREATED);
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Task> updateTask(@RequestBody Task task, @PathVariable Long id) {
+        Task updatedTask = taskService.updateTask(id, task);
+        return new ResponseEntity<>(updatedTask, HttpStatus.OK);
     }
 
-    @PostMapping("/delete/{id}")
-    public ResponseEntity<Task> deleteTask(@PathVariable  Long id) {
-       taskService.deleteTask(id);
-        return new ResponseEntity<>( HttpStatus.CREATED);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Task> deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     @GetMapping("/status/{status}")
     public ResponseEntity<List<Task>> getTasksByStatus(@PathVariable String status) {
         List<Task> tasks = taskService.getTasksByStatus(TaskStatus.valueOf(status));
         return ResponseEntity.ok(tasks);
     }
+
     @PostMapping("/{id}/{status}")
-    public ResponseEntity<Task> UpdatedTaskStatus(@PathVariable Long id,@PathVariable String status)
-    {
-        Task task =taskService.updateTaskStatus(id,TaskStatus.valueOf(status));
+    public ResponseEntity<Task> UpdatedTaskStatus(@PathVariable Long id, @PathVariable String status) {
+        Task task = taskService.updateTaskStatus(id, TaskStatus.valueOf(status));
         return ResponseEntity.ok(task);
     }
 
