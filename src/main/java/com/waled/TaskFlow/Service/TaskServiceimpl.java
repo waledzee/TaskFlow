@@ -5,6 +5,9 @@ import com.waled.TaskFlow.Exception.TaskNotFoundException;
 import com.waled.TaskFlow.Model.Task;
 import com.waled.TaskFlow.Model.TaskStatus;
 import com.waled.TaskFlow.Repository.TaskRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,14 +34,19 @@ public class TaskServiceimpl implements TaskService{
     @Override
     public Optional<Task> getTaskById(Long id)
     {
-       return taskRepository.findById(id)
-               .orElseThrow(() -> new RuntimeException("Task not found "+id ));
+       return taskRepository.findById(id);
     }
     @Override
     public List<Task> getAllTasks()
     {
         return taskRepository.findAll();
     }
+    @Override
+    public Page<Task> getAllTasksByPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return taskRepository.findAll(pageable);
+    }
+
 
     @Override
     public Task updateTask(Long id, Task taskDetails) {
@@ -56,7 +64,10 @@ public class TaskServiceimpl implements TaskService{
     @Override
     public void deleteTask(Long id)
     {
-        taskRepository.deleteById(id);
+        Task task = getTaskById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + id));
+        taskRepository.delete(task);
+
     }
     @Override
    public List<Task> getTasksByStatus(TaskStatus status)
@@ -66,12 +77,12 @@ public class TaskServiceimpl implements TaskService{
 
     public Task updateTaskStatus(Long id, TaskStatus newStatus)
     {
-        Task task =getTaskById(id)
-                .orElseThrow(() -> new RuntimeException(" incorrect id"));
+        Task task = getTaskById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + id));
         task.setStatus(newStatus);
-
         return taskRepository.save(task);
+    }
     }
 
 
-}
+

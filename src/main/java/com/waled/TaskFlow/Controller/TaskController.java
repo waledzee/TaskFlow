@@ -4,11 +4,14 @@ import com.waled.TaskFlow.Model.Task;
 import com.waled.TaskFlow.Model.TaskStatus;
 import com.waled.TaskFlow.Service.TaskService;
 import com.waled.TaskFlow.Service.TaskServiceimpl;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -33,6 +36,23 @@ public class TaskController {
         List<Task> tasks = taskService.getAllTasks();
         return ResponseEntity.ok(tasks);
     }
+
+    @GetMapping("/page")
+    public ResponseEntity<Map<String, Object>> getAllTasksBYPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        Page<Task> pageTasks = taskService.getAllTasksByPage(page, size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("tasks", pageTasks.getContent());
+        response.put("currentPage", pageTasks.getNumber());
+        response.put("totalItems", pageTasks.getTotalElements());
+        response.put("totalPages", pageTasks.getTotalPages());
+
+        return ResponseEntity.ok(response);
+    }
+
 
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
