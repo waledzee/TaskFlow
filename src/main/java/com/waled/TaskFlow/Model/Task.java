@@ -6,11 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tasks")
 public class Task {
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,16 +27,25 @@ public class Task {
 
     @Column(name = "due_date")
     @JsonProperty("dueDate")
-    private LocalDate dueDate;
+    private LocalDateTime dueDate;
 
     public Task() {}
 
-    public Task(Long id, String title, String description, LocalDate dueDate, TaskStatus status) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
+    public Task(TaskStatus status, LocalDateTime dueDate, String description, String title, Long id, User user) {
         this.status = status;
+        this.dueDate = dueDate;
+        this.description = description;
+        this.title = title;
+        this.id = id;
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     // Getters and Setters
@@ -61,11 +73,11 @@ public class Task {
         this.description = description;
     }
 
-    public LocalDate getDueDate() {
+    public LocalDateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDate dueDate) {
+    public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
     }
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ public class TaskServiceimpl implements TaskService{
     @Override
     public Task createTask(Task task)
     {
-        task.setDueDate(LocalDate.now());
+        task.setDueDate(LocalDateTime.now());
         return taskRepository.save(task);
     }
 

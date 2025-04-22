@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -24,4 +25,6 @@ public interface TaskRepository extends JpaRepository<Task,Long> {
     @Transactional
     @Query("UPDATE Task t SET t.status = :status WHERE t.id = :id")
     Task updateTaskStatus(@Param("id") Long id, @Param("status") TaskStatus status);
+
+    List<Task> findByDueDateBetween(LocalDateTime now, LocalDateTime tomorrow);
 }
