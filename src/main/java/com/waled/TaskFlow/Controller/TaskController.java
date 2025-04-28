@@ -2,8 +2,11 @@ package com.waled.TaskFlow.Controller;
 
 import com.waled.TaskFlow.Model.Task;
 import com.waled.TaskFlow.Model.TaskStatus;
+import com.waled.TaskFlow.Model.User;
 import com.waled.TaskFlow.Service.TaskService;
 import com.waled.TaskFlow.Service.TaskServiceimpl;
+import com.waled.TaskFlow.Service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +21,12 @@ import java.util.Map;
 public class TaskController {
 
     private final TaskService taskService;
+    private final UserService userService;
 
-    public TaskController(TaskService taskService) {
+
+    public TaskController(TaskService taskService ,UserService userService) {
         this.taskService = taskService;
+        this.userService=userService;
     }
 
     @GetMapping("/{id}")
@@ -53,10 +59,16 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
-
-    @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
+@PostMapping
+    public ResponseEntity<Task> createTask(@RequestBody Task task, Authentication authentication) {
+        System.out.println("Username from authentication: " + authentication.getName());
+        User user = userService.findByUserName(authentication.getName());
+        if (user == null) {
+            throw new RuntimeException("User not found: " + authentication.getName());
+        }
+        task.setUser(user);
         Task createdTask = taskService.createTask(task);
+        System.out.println("Saved task with user_id: " + createdTask.getUser().getId());
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 

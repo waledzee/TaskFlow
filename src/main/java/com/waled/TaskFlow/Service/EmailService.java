@@ -4,6 +4,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -17,7 +18,7 @@ public class EmailService {
 
     }
 
-    public void sendTaskReminder(String to, String taskTitle, LocalDateTime dueDate) {
+    public void sendTaskReminder(String to, String taskTitle, LocalDate dueDate) {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);

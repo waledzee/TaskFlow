@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -27,11 +28,11 @@ public class Task {
 
     @Column(name = "due_date")
     @JsonProperty("dueDate")
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
 
     public Task() {}
 
-    public Task(TaskStatus status, LocalDateTime dueDate, String description, String title, Long id, User user) {
+    public Task(TaskStatus status, LocalDate dueDate, String description, String title, Long id, User user) {
         this.status = status;
         this.dueDate = dueDate;
         this.description = description;
@@ -73,11 +74,11 @@ public class Task {
         this.description = description;
     }
 
-    public LocalDateTime getDueDate() {
+    public LocalDate getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDateTime dueDate) {
+    public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
 

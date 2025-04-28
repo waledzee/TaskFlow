@@ -28,7 +28,7 @@ public class TaskServiceimpl implements TaskService{
     @Override
     public Task createTask(Task task)
     {
-        task.setDueDate(LocalDateTime.now());
+        task.setDueDate(LocalDate.now());
         return taskRepository.save(task);
     }
 
